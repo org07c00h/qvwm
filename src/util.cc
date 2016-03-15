@@ -7,12 +7,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with qvwm; see the file COPYING.  If not, write to
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -54,7 +54,7 @@
 #include "exec.h"
 #include "paging.h"
 #include "pager.h"
-#include "anim_image.h"
+// #include "anim_image.h"
 #include "pixmap_image.h"
 #ifdef USE_IMLIB
 #include "extra_image.h"
@@ -212,9 +212,9 @@ QvImage* CreateImage(char* filename, Timer* timer)
 #else
   if (stat(filename, &st) == 0) {
 #endif
-    if (strcmp(&filename[len - 4], ".ani") == 0)
-      img = new AnimImage(filename, timer);
-    else {
+    // if (strcmp(&filename[len - 4], ".ani") == 0)
+    //   img = new AnimImage(filename, timer);
+    // else {
 #ifdef USE_IMLIB
       img = new ExtraImage(filename);
 #else
@@ -225,7 +225,7 @@ QvImage* CreateImage(char* filename, Timer* timer)
 	img = NULL;
       }
 #endif // USE_IMLIB
-    }
+    //}
 
     if (img && img->GetError()) {
       QvImage::Destroy(img);
@@ -278,7 +278,7 @@ char* GetFixName(XFontSet& fs, const char* name, int width)
       len++;
     len--;
   }
-  
+
   str = new char[len + 1];
   strncpy(str, name, len);
   str[len] = '\0';
@@ -367,7 +367,7 @@ void RefreshScreen()
 			  DisplayWidth(display, screen),
 			  DisplayHeight(display, screen),
 			  0, black.pixel, white.pixel);
-  
+
   XMapWindow(display, w);
   XFlush(display);
   XDestroyWindow(display, w);
@@ -395,12 +395,12 @@ pid_t ExecCommand(char* exec)
   else if (strncmp(exec, "PAGE", 4) == 0) {
     char cmd[256], *comp;
     Point pageoff;
-    
+
     if (exec[4] == '[') {
       char *next;
 
       strcpy(cmd, &exec[5]);
-      
+
       // x page offset
       next = strtok(cmd, ",");
       if (next == NULL) {
@@ -487,7 +487,7 @@ pid_t ExecCommand(char* exec)
     timer->SetTimeout(HourGlassTime, new GlobalCallback(&RestoreCursor));
   }
 
-#ifdef __EMX__  
+#ifdef __EMX__
   if (spawnl(P_NOWAIT, "cmd.exe", "cmd.exe", "/C", exec, NULL) == -1)
     QvwmError("Can't execute '%s'", exec);
 #else
@@ -497,7 +497,7 @@ pid_t ExecCommand(char* exec)
       _exit(1);
     }
   }
-#endif    
+#endif
 
   return (pid);
 }
@@ -558,7 +558,7 @@ char* ExtractPathName(char* name)
   else if (name[0] == '$') {
     char env[MAX_ENV_NAME + 1];
     char* dir;
-    
+
     dir = GetNextDelim(&name[1], env, MAX_ENV_NAME + 1);
     char* exenv = getenv(env);
 
@@ -609,13 +609,13 @@ extern "C" int select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
 void usleep(unsigned long usec)
 {
   struct timeval tm;
-  
+
   if (usec <= 0)
     return;
-  
+
   tm.tv_usec = usec % 1000000;
   tm.tv_sec = usec / 1000000;
-  
+
   select(1, NULL, NULL, NULL, &tm);
 }
 #endif // HAVE_USLEEP
@@ -677,7 +677,7 @@ void DrawRealString(Window w, XFontSet fs, GC gc, int x, int y, char* str)
     if (bold)
       XmbDrawString(display, w, fs, gc, x, y + 1,
 		    keyStr + 2, str + len - (keyStr + 2));
-    
+
     // draw underscore
     XmbTextExtents(fs, keyStr + 2, 1, &ink, &log);
     XDrawLine(display, w, gc, x, y + 1, x + log.width, y + 1);
@@ -690,7 +690,7 @@ void PlaySound(char* file, Bool sync)
 {
   if (file == NULL || file[0] == '\0')
     return;
-  
+
   if (!EnableSound)
     return;
 
@@ -704,7 +704,7 @@ void PlaySound(char* file, Bool sync)
   Audio* audio;
   int filelen = strlen(file);
   int ret;
-    
+
   if (filelen > 4 && strcmp(&file[filelen - 4], ".wav") == 0)
     audio = new AudioWav(AUDIODEV);
   else if (filelen > 3 && strcmp(&file[filelen - 3], ".au") == 0)
@@ -716,7 +716,7 @@ void PlaySound(char* file, Bool sync)
     else
       exit(0);
   }
-    
+
   // EnableSound may be set to False in Audio constructor
   if (!EnableSound) {
     delete audio;
@@ -779,7 +779,7 @@ void PlaySound(char* file, Bool sync)
     QvwmError("not found sound file: '%s'", file);
 
   delete audio;
-  
+
   if (!sync)
     exit(0);
 #endif // __EMX__
@@ -788,7 +788,7 @@ void PlaySound(char* file, Bool sync)
 Bool IsPointerInWindow(const Point& ptRoot)
 {
   List<Qvwm>::Iterator i(&desktop.GetQvwmList());
-  
+
   for (Qvwm* qvWm = i.GetHead(); qvWm; qvWm = i.GetNext()) {
     Rect rcReal = qvWm->GetRect();
     rcReal.x -= paging->origin.x;

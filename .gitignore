@@ -27,3 +27,7 @@ rc/kanji.qvwmrc
 rc/light.qvwmrc
 rc/portuguese.qvwmrc
 rc/system.qvwmrc
+
+*.o
+src/qvwm
+*.cache
